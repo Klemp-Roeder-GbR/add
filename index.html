@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -31,16 +31,19 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         
-        .logo {
+        .avatar {
             width: 80px;
             height: 80px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
-            font-size: 40px;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
         }
         
         h1 {
@@ -101,6 +104,7 @@
             display: flex;
             gap: 10px;
             justify-content: center;
+            flex-wrap: wrap;
         }
         
         .store-badge {
@@ -123,18 +127,47 @@
             margin: 20px auto;
         }
         
+        .error {
+            display: none;
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .username {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">📱</div>
+        <div class="avatar" id="avatar">?</div>
         <h1>Freundschaftsanfrage</h1>
         <div class="username" id="username">Lädt...</div>
-        <p>Möchtest du diese Person zu deinen Freunden hinzufügen?</p>
+        
+        <div class="error" id="error">
+            Ungültiger Link. Bitte überprüfe den Link und versuche es erneut.
+        </div>
+        
+        <p id="description">Möchtest du diese Person zu deinen Freunden hinzufügen?</p>
         
         <button class="button" id="openAppBtn" onclick="openApp()">
             App öffnen
@@ -164,18 +197,33 @@
         // Parse URL parameter
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username');
-        const userId = urlParams.get('userId');
         
-        // Display username
-        if (username) {
-            document.getElementById('username').textContent = '@' + username;
-        } else {
-            document.getElementById('username').textContent = 'Unbekannter Benutzer';
+        // Initialize page
+        function initializePage() {
+            if (username && username.trim() !== '') {
+                // Display username
+                document.getElementById('username').textContent = '@' + username;
+                
+                // Set avatar to first letter
+                const firstLetter = username.charAt(0).toUpperCase();
+                document.getElementById('avatar').textContent = firstLetter;
+                
+                // Show content
+                document.getElementById('openAppBtn').style.display = 'block';
+                document.getElementById('description').style.display = 'block';
+            } else {
+                // Show error
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('username').textContent = 'Unbekannter Benutzer';
+                document.getElementById('avatar').textContent = '?';
+                document.getElementById('openAppBtn').style.display = 'none';
+                document.getElementById('description').style.display = 'none';
+            }
         }
         
         function openApp() {
-            if (!username || !userId) {
-                alert('Ungültiger Link');
+            if (!username || username.trim() === '') {
+                document.getElementById('error').style.display = 'block';
                 return;
             }
             
@@ -185,41 +233,48 @@
             button.style.display = 'none';
             loading.style.display = 'block';
             
-            // Try to open the app with custom URL scheme
-            const appUrl = `ratemybuy://friend-request?username=${encodeURIComponent(username)}&userId=${encodeURIComponent(userId)}`;
+            // Build app URL with only username
+            const appUrl = `ratemybuy://friend-request?username=${encodeURIComponent(username)}`;
             
-            // For iOS
-            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            // Detect platform
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            if (isIOS) {
+                // Try to open app
                 window.location.href = appUrl;
                 
-                // Fallback to App Store after 2 seconds if app is not installed
+                // Fallback to App Store after 2.5 seconds if app is not installed
                 setTimeout(() => {
                     window.location.href = 'https://apps.apple.com/app/id6752779751';
-                }, 2000);
-            } 
-            // For Android
-            else if (/Android/.test(navigator.userAgent)) {
+                }, 2500);
+            } else if (isAndroid) {
+                // Try to open app
                 window.location.href = appUrl;
                 
-                // Fallback to Play Store after 2 seconds if app is not installed
+                // Fallback to Play Store after 2.5 seconds if app is not installed
                 setTimeout(() => {
                     window.location.href = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
-                }, 2000);
-            }
-            // Desktop or other
-            else {
+                }, 2500);
+            } else {
+                // Desktop or other platform
                 alert('Bitte öffne diesen Link auf deinem Smartphone');
                 button.style.display = 'block';
                 loading.style.display = 'none';
             }
         }
         
+        // Initialize page on load
+        initializePage();
+        
         // Auto-open app on mobile devices
         if (/iPhone|iPad|iPod|Android/.test(navigator.userAgent)) {
-            // Wait a bit for page to load, then auto-trigger
-            setTimeout(() => {
-                openApp();
-            }, 500);
+            if (username && username.trim() !== '') {
+                // Wait for page to load, then auto-trigger
+                setTimeout(() => {
+                    openApp();
+                }, 500);
+            }
         }
     </script>
 </body>
