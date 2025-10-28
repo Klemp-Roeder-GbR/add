@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -29,6 +29,16 @@
             width: 100%;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 25px;
         }
         
         .avatar {
@@ -78,6 +88,7 @@
             border: none;
             cursor: pointer;
             width: 100%;
+            margin-bottom: 12px;
         }
         
         .button:hover {
@@ -87,6 +98,17 @@
         
         .button:active {
             transform: translateY(0);
+        }
+        
+        .button-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .button-secondary:hover {
+            background: #f8f9ff;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
         }
         
         .store-links {
@@ -137,6 +159,24 @@
             margin-bottom: 20px;
         }
         
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -145,6 +185,10 @@
         @media (max-width: 480px) {
             .container {
                 padding: 30px 20px;
+            }
+            
+            .logo {
+                font-size: 24px;
             }
             
             h1 {
@@ -159,6 +203,8 @@
 </head>
 <body>
     <div class="container">
+        <div class="logo">RateMyBuy</div>
+        
         <div class="avatar" id="avatar">?</div>
         <h1>Freundschaftsanfrage</h1>
         <div class="username" id="username">Lädt...</div>
@@ -167,11 +213,15 @@
             Ungültiger Link. Bitte überprüfe den Link und versuche es erneut.
         </div>
         
-        <p id="description">Möchtest du diese Person zu deinen Freunden hinzufügen?</p>
+        <p id="description">Möchtest du diese Person zu deinen Freunden in RateMyBuy hinzufügen?</p>
         
         <button class="button" id="openAppBtn" onclick="openApp()">
             App öffnen
         </button>
+        
+        <a href="https://klemp-roeder.de/RateMyBuy" class="button button-secondary" id="aboutBtn">
+            Über die App
+        </a>
         
         <div class="loading" id="loading">
             <div class="spinner"></div>
@@ -190,6 +240,12 @@
                          alt="Get it on Google Play" class="store-badge">
                 </a>
             </div>
+        </div>
+        
+        <div class="footer">
+            <a href="https://klemp-roeder.de/Impressum" target="_blank">Impressum</a>
+            •
+            <a href="https://klemp-roeder.de/RateMyBuy" target="_blank">Über RateMyBuy</a>
         </div>
     </div>
 
@@ -210,6 +266,7 @@
                 
                 // Show content
                 document.getElementById('openAppBtn').style.display = 'block';
+                document.getElementById('aboutBtn').style.display = 'block';
                 document.getElementById('description').style.display = 'block';
             } else {
                 // Show error
@@ -217,6 +274,7 @@
                 document.getElementById('username').textContent = 'Unbekannter Benutzer';
                 document.getElementById('avatar').textContent = '?';
                 document.getElementById('openAppBtn').style.display = 'none';
+                document.getElementById('aboutBtn').style.display = 'block';
                 document.getElementById('description').style.display = 'none';
             }
         }
@@ -229,8 +287,10 @@
             
             const button = document.getElementById('openAppBtn');
             const loading = document.getElementById('loading');
+            const aboutBtn = document.getElementById('aboutBtn');
             
             button.style.display = 'none';
+            aboutBtn.style.display = 'none';
             loading.style.display = 'block';
             
             // Build app URL with only username
@@ -260,6 +320,7 @@
                 // Desktop or other platform
                 alert('Bitte öffne diesen Link auf deinem Smartphone');
                 button.style.display = 'block';
+                aboutBtn.style.display = 'block';
                 loading.style.display = 'none';
             }
         }
