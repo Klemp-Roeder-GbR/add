@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RateMyBuy - Freund hinzufügen</title>
+    <title>RateMyBuy - Friend Request</title>
     <style>
         * {
             margin: 0;
@@ -177,6 +177,27 @@
             text-decoration: underline;
         }
         
+        .lang-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .lang-selector select {
+            border: none;
+            background: transparent;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -198,41 +219,57 @@
             .username {
                 font-size: 18px;
             }
+            
+            .lang-selector {
+                top: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="lang-selector">
+        🌐 <select id="langSelect" onchange="changeLanguage(this.value)">
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="it">Italiano</option>
+            <option value="pt">Português</option>
+        </select>
+    </div>
+
     <div class="container">
         <div class="logo">RateMyBuy</div>
         
         <div class="avatar" id="avatar">?</div>
-        <h1>Freundschaftsanfrage</h1>
+        <h1 id="title">Freundschaftsanfrage</h1>
         <div class="username" id="username">Lädt...</div>
         
         <div class="error" id="error">
-            Ungültiger Link. Bitte überprüfe den Link und versuche es erneut.
+            <span id="errorText">Ungültiger Link. Bitte überprüfe den Link und versuche es erneut.</span>
         </div>
         
         <p id="description">Möchtest du diese Person zu deinen Freunden in RateMyBuy hinzufügen?</p>
         
         <button class="button" id="openAppBtn" onclick="openApp()">
-            App öffnen
+            <span id="openAppText">App öffnen</span>
         </button>
         
         <a href="https://klemp-roeder.de/RateMyBuy" class="button button-secondary" id="aboutBtn">
-            Über die App
+            <span id="aboutText">Über die App</span>
         </a>
         
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>App wird geöffnet...</p>
+            <p id="loadingText">App wird geöffnet...</p>
         </div>
         
         <div class="store-links">
-            <p>App noch nicht installiert?</p>
+            <p id="storeText">App noch nicht installiert?</p>
             <div class="stores">
                 <a href="https://apps.apple.com/app/id6752779751" target="_blank">
-                    <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/de-de?size=250x83" 
+                    <img id="appStoreImg" src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/de-de?size=250x83" 
                          alt="Download on App Store" class="store-badge">
                 </a>
                 <a href="https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy" target="_blank">
@@ -243,35 +280,170 @@
         </div>
         
         <div class="footer">
-            <a href="https://klemp-roeder.de/Impressum" target="_blank">Impressum</a>
+            <a href="https://klemp-roeder.de/Impressum" target="_blank" id="imprintText">Impressum</a>
             •
-            <a href="https://klemp-roeder.de/RateMyBuy" target="_blank">Über RateMyBuy</a>
+            <a href="https://klemp-roeder.de/RateMyBuy" target="_blank" id="aboutLinkText">Über RateMyBuy</a>
         </div>
     </div>
 
     <script>
-        // Parse URL parameter
+        // Translations
+        const translations = {
+            de: {
+                title: "Freundschaftsanfrage",
+                loading: "Lädt...",
+                unknownUser: "Unbekannter Benutzer",
+                description: "Möchtest du diese Person zu deinen Freunden in RateMyBuy hinzufügen?",
+                openApp: "App öffnen",
+                about: "Über die App",
+                loadingApp: "App wird geöffnet...",
+                storeText: "App noch nicht installiert?",
+                error: "Ungültiger Link. Bitte überprüfe den Link und versuche es erneut.",
+                mobileAlert: "Bitte öffne diesen Link auf deinem Smartphone",
+                imprint: "Impressum",
+                aboutLink: "Über RateMyBuy",
+                appStoreBadge: "de-de"
+            },
+            en: {
+                title: "Friend Request",
+                loading: "Loading...",
+                unknownUser: "Unknown User",
+                description: "Do you want to add this person to your friends in RateMyBuy?",
+                openApp: "Open App",
+                about: "About the App",
+                loadingApp: "Opening app...",
+                storeText: "App not installed yet?",
+                error: "Invalid link. Please check the link and try again.",
+                mobileAlert: "Please open this link on your smartphone",
+                imprint: "Imprint",
+                aboutLink: "About RateMyBuy",
+                appStoreBadge: "en-us"
+            },
+            es: {
+                title: "Solicitud de Amistad",
+                loading: "Cargando...",
+                unknownUser: "Usuario Desconocido",
+                description: "¿Quieres añadir a esta persona a tus amigos en RateMyBuy?",
+                openApp: "Abrir App",
+                about: "Sobre la App",
+                loadingApp: "Abriendo app...",
+                storeText: "¿App no instalada aún?",
+                error: "Enlace inválido. Por favor verifica el enlace e inténtalo de nuevo.",
+                mobileAlert: "Por favor abre este enlace en tu smartphone",
+                imprint: "Aviso Legal",
+                aboutLink: "Sobre RateMyBuy",
+                appStoreBadge: "en-us"
+            },
+            fr: {
+                title: "Demande d'Ami",
+                loading: "Chargement...",
+                unknownUser: "Utilisateur Inconnu",
+                description: "Voulez-vous ajouter cette personne à vos amis dans RateMyBuy?",
+                openApp: "Ouvrir l'App",
+                about: "À propos de l'App",
+                loadingApp: "Ouverture de l'app...",
+                storeText: "App pas encore installée?",
+                error: "Lien invalide. Veuillez vérifier le lien et réessayer.",
+                mobileAlert: "Veuillez ouvrir ce lien sur votre smartphone",
+                imprint: "Mentions Légales",
+                aboutLink: "À propos de RateMyBuy",
+                appStoreBadge: "en-us"
+            },
+            it: {
+                title: "Richiesta di Amicizia",
+                loading: "Caricamento...",
+                unknownUser: "Utente Sconosciuto",
+                description: "Vuoi aggiungere questa persona ai tuoi amici in RateMyBuy?",
+                openApp: "Apri App",
+                about: "Informazioni sull'App",
+                loadingApp: "Apertura app...",
+                storeText: "App non ancora installata?",
+                error: "Link non valido. Controlla il link e riprova.",
+                mobileAlert: "Apri questo link sul tuo smartphone",
+                imprint: "Note Legali",
+                aboutLink: "Informazioni su RateMyBuy",
+                appStoreBadge: "en-us"
+            },
+            pt: {
+                title: "Pedido de Amizade",
+                loading: "Carregando...",
+                unknownUser: "Usuário Desconhecido",
+                description: "Você quer adicionar esta pessoa aos seus amigos no RateMyBuy?",
+                openApp: "Abrir App",
+                about: "Sobre o App",
+                loadingApp: "Abrindo app...",
+                storeText: "App ainda não instalado?",
+                error: "Link inválido. Por favor verifique o link e tente novamente.",
+                mobileAlert: "Por favor abra este link no seu smartphone",
+                imprint: "Impressum",
+                aboutLink: "Sobre RateMyBuy",
+                appStoreBadge: "en-us"
+            }
+        };
+
+        // Parse URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username');
-        
+        let currentLang = urlParams.get('lang') || 'de';
+
+        // Detect browser language if no lang parameter
+        if (!urlParams.get('lang')) {
+            const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
+            if (translations[browserLang]) {
+                currentLang = browserLang;
+            }
+        }
+
+        // Apply translations
+        function applyTranslations(lang) {
+            const t = translations[lang] || translations.de;
+            
+            document.documentElement.lang = lang;
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('description').textContent = t.description;
+            document.getElementById('openAppText').textContent = t.openApp;
+            document.getElementById('aboutText').textContent = t.about;
+            document.getElementById('loadingText').textContent = t.loadingApp;
+            document.getElementById('storeText').textContent = t.storeText;
+            document.getElementById('errorText').textContent = t.error;
+            document.getElementById('imprintText').textContent = t.imprint;
+            document.getElementById('aboutLinkText').textContent = t.aboutLink;
+            
+            // Update App Store badge
+            const appStoreImg = document.getElementById('appStoreImg');
+            appStoreImg.src = `https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/${t.appStoreBadge}?size=250x83`;
+            
+            // Update lang selector
+            document.getElementById('langSelect').value = lang;
+            
+            // Save language preference
+            currentLang = lang;
+        }
+
+        // Change language
+        function changeLanguage(lang) {
+            applyTranslations(lang);
+            
+            // Update URL without reload
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('lang', lang);
+            window.history.replaceState({}, '', newUrl);
+        }
+
         // Initialize page
         function initializePage() {
+            applyTranslations(currentLang);
+            
             if (username && username.trim() !== '') {
-                // Display username
                 document.getElementById('username').textContent = '@' + username;
-                
-                // Set avatar to first letter
                 const firstLetter = username.charAt(0).toUpperCase();
                 document.getElementById('avatar').textContent = firstLetter;
-                
-                // Show content
                 document.getElementById('openAppBtn').style.display = 'block';
                 document.getElementById('aboutBtn').style.display = 'block';
                 document.getElementById('description').style.display = 'block';
             } else {
-                // Show error
                 document.getElementById('error').style.display = 'block';
-                document.getElementById('username').textContent = 'Unbekannter Benutzer';
+                document.getElementById('username').textContent = translations[currentLang].unknownUser;
                 document.getElementById('avatar').textContent = '?';
                 document.getElementById('openAppBtn').style.display = 'none';
                 document.getElementById('aboutBtn').style.display = 'block';
@@ -293,32 +465,23 @@
             aboutBtn.style.display = 'none';
             loading.style.display = 'block';
             
-            // Build app URL with only username
             const appUrl = `ratemybuy://friend-request?username=${encodeURIComponent(username)}`;
             
-            // Detect platform
             const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
             const isAndroid = /Android/.test(navigator.userAgent);
             
             if (isIOS) {
-                // Try to open app
                 window.location.href = appUrl;
-                
-                // Fallback to App Store after 2.5 seconds if app is not installed
                 setTimeout(() => {
                     window.location.href = 'https://apps.apple.com/app/id6752779751';
                 }, 2500);
             } else if (isAndroid) {
-                // Try to open app
                 window.location.href = appUrl;
-                
-                // Fallback to Play Store after 2.5 seconds if app is not installed
                 setTimeout(() => {
                     window.location.href = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
                 }, 2500);
             } else {
-                // Desktop or other platform
-                alert('Bitte öffne diesen Link auf deinem Smartphone');
+                alert(translations[currentLang].mobileAlert);
                 button.style.display = 'block';
                 aboutBtn.style.display = 'block';
                 loading.style.display = 'none';
@@ -331,7 +494,6 @@
         // Auto-open app on mobile devices
         if (/iPhone|iPad|iPod|Android/.test(navigator.userAgent)) {
             if (username && username.trim() !== '') {
-                // Wait for page to load, then auto-trigger
                 setTimeout(() => {
                     openApp();
                 }, 500);
