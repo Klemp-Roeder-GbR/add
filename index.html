@@ -132,6 +132,10 @@
         .store-badge {
             height: 40px;
         }
+
+        .store-badge.google {
+            height: 60px;
+        }
         
         .loading {
             display: none;
@@ -269,12 +273,12 @@
             <p id="storeText">App noch nicht installiert?</p>
             <div class="stores">
                 <a href="https://apps.apple.com/app/id6752779751" target="_blank">
-                    <img id="appStoreImg" src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/de-de?size=250x83" 
+                    <img id="appStoreImg" src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" 
                          alt="Download on App Store" class="store-badge">
                 </a>
                 <a href="https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy" target="_blank">
-                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/de_badge_web_generic.png" 
-                         alt="Get it on Google Play" class="store-badge">
+                    <img id="playStoreImg" src="https://play.google.com/intl/en_us/badges/static/images/badges/de_badge_web_generic.png" 
+                         alt="Get it on Google Play" class="store-badge.google">
                 </a>
             </div>
         </div>
@@ -302,7 +306,8 @@
                 mobileAlert: "Bitte öffne diesen Link auf deinem Smartphone",
                 imprint: "Impressum",
                 aboutLink: "Über RateMyBuy",
-                appStoreBadge: "de-de"
+                appStoreBadge: "de-de",
+                playStoreBadge: "de_badge_web_generic"
             },
             en: {
                 title: "Friend Request",
@@ -317,7 +322,8 @@
                 mobileAlert: "Please open this link on your smartphone",
                 imprint: "Imprint",
                 aboutLink: "About RateMyBuy",
-                appStoreBadge: "en-us"
+                appStoreBadge: "en-us",
+                playStoreBadge: "en_badge_web_generic"
             },
             es: {
                 title: "Solicitud de Amistad",
@@ -332,7 +338,8 @@
                 mobileAlert: "Por favor abre este enlace en tu smartphone",
                 imprint: "Aviso Legal",
                 aboutLink: "Sobre RateMyBuy",
-                appStoreBadge: "en-us"
+                appStoreBadge: "es-es",
+                playStoreBadge: "es_badge_web_generic"
             },
             fr: {
                 title: "Demande d'Ami",
@@ -347,7 +354,8 @@
                 mobileAlert: "Veuillez ouvrir ce lien sur votre smartphone",
                 imprint: "Mentions Légales",
                 aboutLink: "À propos de RateMyBuy",
-                appStoreBadge: "en-us"
+                appStoreBadge: "fr-fr",
+                playStoreBadge: "fr_badge_web_generic"
             },
             it: {
                 title: "Richiesta di Amicizia",
@@ -362,7 +370,8 @@
                 mobileAlert: "Apri questo link sul tuo smartphone",
                 imprint: "Note Legali",
                 aboutLink: "Informazioni su RateMyBuy",
-                appStoreBadge: "en-us"
+                appStoreBadge: "it-it",
+                playStoreBadge: "it_badge_web_generic"
             },
             pt: {
                 title: "Pedido de Amizade",
@@ -377,7 +386,8 @@
                 mobileAlert: "Por favor abra este link no seu smartphone",
                 imprint: "Impressum",
                 aboutLink: "Sobre RateMyBuy",
-                appStoreBadge: "en-us"
+                appStoreBadge: "pt-pt",
+                playStoreBadge: "pt-br_badge_web_generic"
             }
         };
 
@@ -412,6 +422,9 @@
             // Update App Store badge
             const appStoreImg = document.getElementById('appStoreImg');
             appStoreImg.src = `https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/${t.appStoreBadge}?size=250x83`;
+
+            const playStoreImg = document.getElementById('playStoreImg');
+            playStoreImg.src = `https://play.google.com/intl/en_us/badges/static/images/badges/${t.playStoreBadge}.png`;
             
             // Update lang selector
             document.getElementById('langSelect').value = lang;
