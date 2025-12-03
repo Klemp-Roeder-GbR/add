@@ -138,7 +138,7 @@
 
         #playStoreImg {
             width: 150px;
-            margin-top: -4px;
+            margin-top: -5px;
         }
         
         .loading {
@@ -447,11 +447,26 @@
             window.history.replaceState({}, '', newUrl);
         }
 
+        function isValidUsername(username) {
+            if (!username || username.trim() === '') return false;
+            
+            const trimmedUsername = username.trim();
+            
+            // Check length (3-15 characters)
+            if (trimmedUsername.length < 3 || trimmedUsername.length > 15) return false;
+            
+            // Check for allowed characters only (letters, numbers, dot, minus, underscore)
+            const validPattern = /^[a-zA-Z0-9._-]+$/;
+            if (!validPattern.test(trimmedUsername)) return false;
+            
+            return true;
+        }
+
         // Initialize page
         function initializePage() {
             applyTranslations(currentLang);
             
-            if (username && username.trim() !== '') {
+            if (isValidUsername(username)) {
                 document.getElementById('username').textContent = '@' + username;
                 const firstLetter = username.charAt(0).toUpperCase();
                 document.getElementById('avatar').textContent = firstLetter;
@@ -469,7 +484,7 @@
         }
         
         function openApp() {
-            if (!username || username.trim() === '') {
+            if (!isValidUsername(username)) {
                 document.getElementById('error').style.display = 'block';
                 return;
             }
@@ -510,7 +525,7 @@
         
         // Auto-open app on mobile devices
         if (/iPhone|iPad|iPod|Android/.test(navigator.userAgent)) {
-            if (username && username.trim() !== '') {
+            if (isValidUsername(username)) {
                 setTimeout(() => {
                     openApp();
                 }, 500);
