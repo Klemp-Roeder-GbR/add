@@ -130,11 +130,15 @@
         }
         
         .store-badge {
-            height: 40px;
+            display: inline-block;
+            height: 60px; /* Fixierte Höhe statt width */
+            width: auto; /* Breite automatisch anpassen */
+            transition: transform 0.2s, opacity 0.2s;
         }
 
-        .store-badge google {
-            height: 100px;
+        .store-badge img {
+            height: 100%;
+            width: auto; /* Breite automatisch basierend auf Höhe */
         }
         
         .loading {
@@ -285,7 +289,7 @@
         
         <div class="footer">
             <a href="https://klemp-roeder.de/Impressum" target="_blank" id="imprintText">Impressum</a>
-            •
+            |
             <a href="https://klemp-roeder.de/RateMyBuy" target="_blank" id="aboutLinkText">Über RateMyBuy</a>
         </div>
     </div>
