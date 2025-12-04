@@ -523,9 +523,19 @@
         // Initialize page on load
         initializePage();
         
-        // Auto-open app on mobile devices
+        // Auto-open app on mobile devices (but not in in-app browsers)
+        function isInAppBrowser() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            
+            // Check for common in-app browsers
+            return (
+                /FBAN|FBAV|Instagram|LinkedIn|Twitter|WhatsApp|Snapchat|Line|Telegram/i.test(ua) ||
+                /wv|WebView|(iPhone|iPod|iPad)(?!.*Safari)/i.test(ua)
+            );
+        }
+        
         if (/iPhone|iPad|iPod|Android/.test(navigator.userAgent)) {
-            if (isValidUsername(username)) {
+            if (isValidUsername(username) && !isInAppBrowser()) {
                 setTimeout(() => {
                     openApp();
                 }, 500);
