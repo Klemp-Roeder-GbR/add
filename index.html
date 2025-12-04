@@ -400,6 +400,9 @@
         const username = urlParams.get('username');
         let currentLang = urlParams.get('lang') || 'de';
 
+        let appOpenAttempted = false;
+        let storeRedirectTimer = null;
+
         // Detect browser language if no lang parameter
         if (!urlParams.get('lang')) {
             const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
@@ -484,10 +487,16 @@
         }
         
         function openApp() {
+            if (appOpenAttempted) {
+                return;
+            }
+            
             if (!isValidUsername(username)) {
                 document.getElementById('error').style.display = 'block';
                 return;
             }
+
+            appOpenAttempted = true;
             
             const button = document.getElementById('openAppBtn');
             const loading = document.getElementById('loading');
@@ -502,21 +511,52 @@
             const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
             const isAndroid = /Android/.test(navigator.userAgent);
             
-            if (isIOS) {
+            if (isIOS || isAndroid) {
+                // Versuche App zu öffnen
                 window.location.href = appUrl;
-                setTimeout(() => {
-                    window.location.href = 'https://apps.apple.com/app/id6752779751';
-                }, 2500);
-            } else if (isAndroid) {
-                window.location.href = appUrl;
-                setTimeout(() => {
-                    window.location.href = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
-                }, 2500);
+                
+                // Nur zu Store weiterleiten wenn App nicht geöffnet wurde
+                // Längere Verzögerung und prüfe ob Seite noch sichtbar ist
+                storeRedirectTimer = setTimeout(() => {
+                    // Prüfe ob User noch auf der Seite ist (App hat nicht geöffnet)
+                    if (document.visibilityState === 'visible') {
+                        if (isIOS) {
+                            window.location.href = 'https://apps.apple.com/app/id6752779751';
+                        } else if (isAndroid) {
+                            window.location.href = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
+                        }
+                    } else {
+                        console.log('App likely opened, skipping store redirect');
+                    }
+                }, 3000); // Erhöht auf 3 Sekunden
+                
+                // Cleanup wenn App öffnet
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'hidden') {
+                        // App hat vermutlich geöffnet
+                        if (storeRedirectTimer) {
+                            clearTimeout(storeRedirectTimer);
+                            storeRedirectTimer = null;
+                            console.log('Page hidden, app likely opened');
+                        }
+                    }
+                });
+                
+                // Cleanup wenn Seite Fokus verliert (iOS Safari)
+                window.addEventListener('blur', () => {
+                    if (storeRedirectTimer) {
+                        clearTimeout(storeRedirectTimer);
+                        storeRedirectTimer = null;
+                        console.log('Window blur, app likely opened');
+                    }
+                });
+                
             } else {
                 alert(translations[currentLang].mobileAlert);
                 button.style.display = 'block';
-                aboutBtn.style.display = 'block';
+                if (aboutBtn) aboutBtn.style.display = 'block';
                 loading.style.display = 'none';
+                appOpenAttempted = false;
             }
         }
         
