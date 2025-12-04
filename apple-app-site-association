@@ -4,7 +4,9 @@
     "details": [
       {
         "appID": "JH3YLGY43W.com.ratemybuy.ratemybuy",
-        "paths": ["*"]
+        "paths": [
+        "NOT /*"
+        ]
       }
     ]
   }
