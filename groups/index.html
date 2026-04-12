@@ -1,7 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RateMyBuy - Gruppen</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-  <h1>Deeplink groups placeholder</h1>
-  <h2>coming soon ...</h2>
+    <div class="spinner"></div>
+    
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const groupId = urlParams.get('groupId');
+            
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            if (!isIOS && !isAndroid) {
+                window.location.href = 'https://klemp-roeder.de/RateMyBuy';
+                return;
+            }
+            
+            // App URL mit oder ohne groupId
+            let appUrl;
+            if (groupId && groupId.trim() !== '') {
+                appUrl = `ratemybuy://group?groupId=${encodeURIComponent(groupId)}`;
+            } else {
+                appUrl = 'ratemybuy://groups';
+            }
+            
+            // Versuche App zu öffnen
+            window.location.href = appUrl;
+            
+            // Fallback zu Store nach 2.5 Sekunden
+            let storeRedirected = false;
+            
+            const redirectToStore = () => {
+                if (storeRedirected || document.visibilityState === 'hidden') return;
+                storeRedirected = true;
+                
+                if (isIOS) {
+                    window.location.href = 'https://apps.apple.com/app/id6752779751';
+                } else if (isAndroid) {
+                    window.location.href = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
+                }
+            };
+            
+            const storeTimer = setTimeout(redirectToStore, 2500);
+            
+            // Cleanup wenn App öffnet
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    clearTimeout(storeTimer);
+                }
+            });
+            
+            window.addEventListener('blur', () => {
+                clearTimeout(storeTimer);
+            });
+            
+            window.addEventListener('pagehide', () => {
+                clearTimeout(storeTimer);
+            });
+        })();
+    </script>
 </body>
+</html>
