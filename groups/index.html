@@ -48,9 +48,9 @@
             // App URL mit oder ohne groupId
             let appUrl;
             if (groupId && groupId.trim() !== '') {
-                appUrl = `ratemybuy://group?groupId=${encodeURIComponent(groupId)}`;
+                appUrl = `ratemybuy://?groupId=${encodeURIComponent(groupId)}`;
             } else {
-                appUrl = 'ratemybuy://groups';
+                appUrl = 'ratemybuy://?openGroups=true';
             }
             
             // Versuche App zu öffnen
