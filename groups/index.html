@@ -25,22 +25,23 @@
         }
         
         .app-icon {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 20px;
-            margin: 0 auto 20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 22px;
+            margin: 0 auto 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            background: white;
         }
-        
-        .status-message {
-            margin: 0 0 10px 0;
-            font-size: 18px;
-            opacity: 0.95;
+
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
         
         .container h2 {
@@ -52,6 +53,7 @@
             margin: 0 0 30px 0;
             font-size: 16px;
             opacity: 0.9;
+            line-height: 1.5;
         }
         
         .button-group {
@@ -86,31 +88,18 @@
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.5);
         }
-        
-        .opening-indicator {
-            display: inline-block;
-            margin-left: 8px;
-            opacity: 0;
-            animation: fadeInOut 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="app-icon">🛒</div>
-        <p class="status-message" id="statusMessage">
-            App wird geöffnet<span class="opening-indicator">...</span>
-        </p>
-        <h2 id="fallbackTitle">App öffnet sich nicht?</h2>
-        <p id="fallbackText">Öffne RateMyBuy manuell oder lade die App herunter</p>
+        <div class="app-icon">
+            <img src="logo.png" alt="Logo">
+        </div>
+        <h2 id="fallbackTitle">RateMyBuy herunterladen</h2>
+        <p id="fallbackText">Lade die App herunter, um diese Gruppe zu öffnen.</p>
         <div class="button-group">
-            <a href="#" class="btn btn-primary" id="retryBtn">App erneut öffnen</a>
-            <a href="#" class="btn btn-secondary" id="storeBtn">Im Store öffnen</a>
+            <a href="#" class="btn btn-primary" id="storeBtn">App herunterladen</a>
+            <a href="#" class="btn btn-secondary" id="retryBtn">App bereits installiert? Öffnen</a>
         </div>
     </div>
     
@@ -120,19 +109,17 @@
             const translations = {
                 de: {
                     title: 'RateMyBuy - Gruppen',
-                    statusMessage: 'App wird geöffnet',
-                    fallbackTitle: 'App öffnet sich nicht?',
-                    fallbackText: 'Öffne RateMyBuy manuell oder lade die App herunter',
-                    retryBtn: 'App erneut öffnen',
-                    storeBtn: 'Im Store öffnen'
+                    fallbackTitle: 'RateMyBuy herunterladen',
+                    fallbackText: 'Lade die App herunter, um diese Gruppe zu öffnen.',
+                    retryBtn: 'App bereits installiert? Öffnen',
+                    storeBtn: 'App herunterladen'
                 },
                 en: {
                     title: 'RateMyBuy - Groups',
-                    statusMessage: 'Opening app',
-                    fallbackTitle: 'App not opening?',
-                    fallbackText: 'Open RateMyBuy manually or download the app',
-                    retryBtn: 'Open app again',
-                    storeBtn: 'Open in Store'
+                    fallbackTitle: 'Download RateMyBuy',
+                    fallbackText: 'Download the app to open this group.',
+                    retryBtn: 'Already installed? Open app',
+                    storeBtn: 'Download app'
                 }
             };
             
@@ -148,8 +135,6 @@
             // Apply translations
             document.title = t.title;
             document.documentElement.lang = lang;
-            document.getElementById('statusMessage').innerHTML = 
-                t.statusMessage + '<span class="opening-indicator">...</span>';
             document.getElementById('fallbackTitle').textContent = t.fallbackTitle;
             document.getElementById('fallbackText').textContent = t.fallbackText;
             document.getElementById('retryBtn').textContent = t.retryBtn;
@@ -195,7 +180,7 @@
                 tryOpenApp();
             });
             
-            // Initial App öffnen
+            // Beim Laden direkt versuchen die App zu öffnen
             tryOpenApp();
             
         })();
