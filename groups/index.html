@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#764ba2">
+    <meta name="theme-color" content="#1a1d29">
     <title>RateMyBuy - Gruppen</title>
     <style>
         body {
@@ -15,11 +15,42 @@
             justify-content: center;
             min-height: 100vh;
             min-height: 100dvh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1a1d29;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.15), transparent 70%);
+            top: -200px;
+            right: -150px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(78, 205, 196, 0.1), transparent 70%);
+            bottom: -150px;
+            left: -100px;
+            border-radius: 50%;
+            pointer-events: none;
         }
         
         .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             color: white;
             padding: 20px;
@@ -101,14 +132,14 @@
         }
         
         .btn-primary {
-            background: white;
-            color: #667eea;
+            background: #90CAF9;
+            color: #1a1d29;
         }
-        
+
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: rgba(144, 202, 249, 0.1);
+            color: #90CAF9;
+            border: 2px solid rgba(144, 202, 249, 0.35);
         }
     </style>
 </head>
@@ -189,10 +220,13 @@
             const isAndroid = /Android/.test(navigator.userAgent);
             
             // Desktop-Redirect
+
+            /*
             if (!isIOS && !isAndroid) {
                 window.location.href = 'https://klemp-roeder.de/RateMyBuy';
                 return;
             }
+                */
             
             // App URL
             let appUrl;
@@ -222,7 +256,7 @@
                 tryOpenApp();
             });
             
-            // Beim Laden direkt versuchen die App zu öffnen
+            // App zu öffnen
             tryOpenApp();
             
         })();
