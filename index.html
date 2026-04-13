@@ -224,7 +224,7 @@
             <span id="openAppText">App öffnen</span>
         </button>
         
-        <a href="https://ratemybuy.klemp-roeder.com/get" class="button button-secondary" id="aboutBtn">
+        <a href="#" class="button button-secondary" id="aboutBtn">
             <span id="aboutText">RateMyBuy herunterladen</span>
         </a>
         
@@ -331,6 +331,13 @@
         // Initialize page
         function initializePage() {
             applyTranslations(currentLang);
+
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            const iosStoreUrl = 'https://apps.apple.com/app/id6752779751';
+            const androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
+            const fallbackWebsite = 'https://klemp-roeder.de/RateMyBuy'
+            document.getElementById('aboutBtn').href = isIOS ? iosStoreUrl : isAndroid ? androidStoreUrl : fallbackWebsite;
             
             if (isValidUsername(username)) {
                 document.getElementById('username').textContent = '@' + username;
