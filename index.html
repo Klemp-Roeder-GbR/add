@@ -21,11 +21,11 @@
             background: #1a1d29;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             padding: 20px;
             position: relative;
             overflow-x: hidden;
-            align-items: flex-start;
+            align-items: center;
+            flex-direction: column;
         }
 
         body::before {
@@ -53,6 +53,7 @@
         }
 
         .container {
+            flex: 1;
             max-width: 400px;
             width: 100%;
             text-align: center;
@@ -62,7 +63,6 @@
             justify-content: flex-start;
             align-items: center;
             padding: 30px 20px 20px;
-            min-height: 100vh;
         }
 
         .logo {
@@ -158,22 +158,22 @@
             margin-bottom: 20px;
         }
 
-        .footer {
+        footer {
             margin-top: auto;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            width: 100%;
+            padding-bottom: 15px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
         }
 
-        .footer a {
+        footer a {
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            margin: 0 8px;
         }
 
-        .footer a:hover {
+        footer a:hover {
             color: white;
             text-decoration: underline;
         }
@@ -233,15 +233,14 @@
             <div class="spinner"></div>
             <p id="loadingText">App wird geöffnet...</p>
         </div>
-        
-        <div class="footer">
-            <a href="https://klemp-roeder.de/Impressum" target="_blank" id="imprintText">Impressum</a>
-            |
-            <a href="https://klemp-roeder.de/Datenschutz" target="_blank" id="privacyPolicyText">Datenschutz</a>
-            |
-            <a href="https://klemp-roeder.de/RateMyBuy" target="_blank" id="aboutLinkText">Über RateMyBuy</a>
-        </div>
     </div>
+    <footer>
+        <a href="https://klemp-roeder.de/Impressum" id="imprintText">Impressum</a>
+        <span>·</span>
+        <a href="https://klemp-roeder.de/Datenschutz" id="privacyPolicyText">Datenschutz</a>
+        <span>·</span>
+        <a href="https://klemp-roeder.de/RateMyBuy" id="aboutLinkText">Über RateMyBuy</a>
+    </footer>
 
     <script>
         // Translations
