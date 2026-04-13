@@ -9,12 +9,14 @@
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+        
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid white;
@@ -23,14 +25,80 @@
             height: 50px;
             animation: spin 1s linear infinite;
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .fallback-container {
+            display: none;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            max-width: 400px;
+        }
+        
+        .fallback-container.show {
+            display: block;
+        }
+        
+        .fallback-container h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        
+        .fallback-container p {
+            margin: 0 0 30px 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
     </style>
 </head>
 <body>
-    <div class="spinner"></div>
+    <div class="spinner" id="spinner"></div>
+    
+    <div class="fallback-container" id="fallback">
+        <h2>App nicht installiert?</h2>
+        <p>Lade RateMyBuy herunter oder öffne die App manuell</p>
+        <div class="button-group">
+            <a href="#" class="btn btn-primary" id="storeBtn">Im Store öffnen</a>
+            <a href="#" class="btn btn-secondary" id="retryBtn">App erneut öffnen</a>
+        </div>
+    </div>
     
     <script>
         (function() {
@@ -40,12 +108,13 @@
             const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
             const isAndroid = /Android/.test(navigator.userAgent);
             
+            // Desktop-Redirect
             if (!isIOS && !isAndroid) {
                 window.location.href = 'https://klemp-roeder.de/RateMyBuy';
                 return;
             }
             
-            // App URL mit oder ohne groupId
+            // App URL
             let appUrl;
             if (groupId && groupId.trim() !== '') {
                 appUrl = `ratemybuy://?groupId=${encodeURIComponent(groupId)}`;
@@ -53,39 +122,73 @@
                 appUrl = 'ratemybuy://?openGroups=true';
             }
             
-            // Versuche App zu öffnen
-            window.location.href = appUrl;
+            // Store URLs
+            const iosStoreUrl = 'https://apps.apple.com/app/id6752779751';
+            const androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
+            const storeUrl = isIOS ? iosStoreUrl : androidStoreUrl;
             
-            // Fallback zu Store nach 2.5 Sekunden
-            let storeRedirected = false;
+            let appOpened = false;
             
-            const redirectToStore = () => {
-                if (storeRedirected || document.visibilityState === 'hidden') return;
-                storeRedirected = true;
-                
+            const spinner = document.getElementById('spinner');
+            const fallback = document.getElementById('fallback');
+            const storeBtn = document.getElementById('storeBtn');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            storeBtn.href = storeUrl;
+            
+            const showFallback = () => {
+                if (appOpened) return;
+                spinner.style.display = 'none';
+                fallback.classList.add('show');
+            };
+            
+            const tryOpenApp = () => {
                 if (isIOS) {
-                    window.location.href = 'https://apps.apple.com/app/id6752779751';
-                } else if (isAndroid) {
-                    window.location.href = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = appUrl;
+                    document.body.appendChild(iframe);
+                    
+                    setTimeout(() => {
+                        if (iframe.parentNode) {
+                            document.body.removeChild(iframe);
+                        }
+                    }, 1000);
+                } else {
+                    window.location.href = appUrl;
                 }
             };
             
-            const storeTimer = setTimeout(redirectToStore, 2500);
-            
-            // Cleanup wenn App öffnet
+            // Events um zu erkennen ob App geöffnet wurde
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'hidden') {
-                    clearTimeout(storeTimer);
+                    appOpened = true;
                 }
             });
             
             window.addEventListener('blur', () => {
-                clearTimeout(storeTimer);
+                appOpened = true;
             });
             
             window.addEventListener('pagehide', () => {
-                clearTimeout(storeTimer);
+                appOpened = true;
             });
+            
+            // Retry Button
+            retryBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                fallback.classList.remove('show');
+                spinner.style.display = 'block';
+                tryOpenApp();
+                setTimeout(showFallback, 2500);
+            });
+            
+            // Initial App öffnen
+            tryOpenApp();
+            
+            // Fallback UI nach 2.5 Sekunden zeigen
+            setTimeout(showFallback, 2500);
+            
         })();
     </script>
 </body>
