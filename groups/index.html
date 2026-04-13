@@ -92,8 +92,8 @@
     <div class="spinner" id="spinner"></div>
     
     <div class="fallback-container" id="fallback">
-        <h2>App nicht installiert?</h2>
-        <p>Lade RateMyBuy herunter oder öffne die App manuell</p>
+        <h2 id="fallbackTitle">App nicht installiert?</h2>
+        <p id="fallbackText">Lade RateMyBuy herunter oder öffne die App manuell</p>
         <div class="button-group">
             <a href="#" class="btn btn-primary" id="storeBtn">Im Store öffnen</a>
             <a href="#" class="btn btn-secondary" id="retryBtn">App erneut öffnen</a>
@@ -102,6 +102,41 @@
     
     <script>
         (function() {
+            // Translations
+            const translations = {
+                de: {
+                    title: 'RateMyBuy - Gruppen',
+                    fallbackTitle: 'App nicht installiert?',
+                    fallbackText: 'Lade RateMyBuy herunter oder öffne die App manuell',
+                    storeBtn: 'Im Store öffnen',
+                    retryBtn: 'App erneut öffnen'
+                },
+                en: {
+                    title: 'RateMyBuy - Groups',
+                    fallbackTitle: 'App not installed?',
+                    fallbackText: 'Download RateMyBuy or open the app manually',
+                    storeBtn: 'Open in Store',
+                    retryBtn: 'Open app again'
+                }
+            };
+            
+            // Detect browser language
+            const detectLanguage = () => {
+                const browserLang = navigator.language || navigator.userLanguage;
+                return browserLang.startsWith('de') ? 'de' : 'en';
+            };
+            
+            const lang = detectLanguage();
+            const t = translations[lang];
+            
+            // Apply translations
+            document.title = t.title;
+            document.documentElement.lang = lang;
+            document.getElementById('fallbackTitle').textContent = t.fallbackTitle;
+            document.getElementById('fallbackText').textContent = t.fallbackText;
+            document.getElementById('storeBtn').textContent = t.storeBtn;
+            document.getElementById('retryBtn').textContent = t.retryBtn;
+            
             const urlParams = new URLSearchParams(window.location.search);
             const groupId = urlParams.get('groupId');
             
@@ -146,7 +181,6 @@
             const tryOpenApp = () => {
                 appOpened = false;
                 
-                // Wichtig: Direkt window.location setzen (kein iframe)
                 window.location.href = appUrl;
                 
                 // Fallback Timer starten
@@ -179,7 +213,7 @@
                 tryOpenApp();
             });
             
-            // Initial App öffnen - DIREKT beim Laden
+            // Initial App öffnen
             tryOpenApp();
             
         })();
