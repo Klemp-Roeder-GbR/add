@@ -61,6 +61,25 @@
             flex-direction: column;
             gap: 12px;
         }
+
+        footer {
+            margin-top: 40px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+        }
+
+        footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: white;
+            text-decoration: underline;
+        }
         
         .btn {
             padding: 16px 32px;
@@ -95,13 +114,20 @@
         <div class="app-icon">
             <img src="logo.png" alt="Logo">
         </div>
-        <h2 id="fallbackTitle">RateMyBuy herunterladen</h2>
+        <h2 id="fallbackTitle">App öffnet sich nicht?</h2>
         <p id="fallbackText">Lade die App herunter, um diese Gruppe zu öffnen.</p>
         <div class="button-group">
             <a href="#" class="btn btn-primary" id="storeBtn">App herunterladen</a>
             <a href="#" class="btn btn-secondary" id="retryBtn">App bereits installiert? Öffnen</a>
         </div>
     </div>
+        <footer>
+        <a href="#" id="linkImpressum"></a>
+        <span>·</span>
+        <a href="#" id="linkAbout"></a>
+        <span>·</span>
+        <a href="#" id="linkPrivacy"></a>
+    </footer>
     
     <script>
         (function() {
@@ -109,17 +135,23 @@
             const translations = {
                 de: {
                     title: 'RateMyBuy - Gruppen',
-                    fallbackTitle: 'RateMyBuy herunterladen',
-                    fallbackText: 'Lade die App herunter, um diese Gruppe zu öffnen.',
+                    fallbackTitle: 'App öffnet sich nicht?',
+                    fallbackText: 'Öffne RateMyBuy manuell oder lade die App herunter',
                     retryBtn: 'App bereits installiert? Öffnen',
-                    storeBtn: 'App herunterladen'
+                    storeBtn: 'RateMyBuy herunterladen',
+                    impressum: 'Impressum',
+                    about: 'Über die App',
+                    privacy: 'Datenschutzerklärung'
                 },
                 en: {
                     title: 'RateMyBuy - Groups',
-                    fallbackTitle: 'Download RateMyBuy',
-                    fallbackText: 'Download the app to open this group.',
+                    fallbackTitle: 'App not opening?',
+                    fallbackText: 'Open RateMyBuy manually or download the app',
                     retryBtn: 'Already installed? Open app',
-                    storeBtn: 'Download app'
+                    storeBtn: 'Download RateMyBuy',
+                    impressum: 'Legal Notice',
+                    about: 'About the App',
+                    privacy: 'Privacy Policy'
                 }
             };
             
@@ -139,6 +171,13 @@
             document.getElementById('fallbackText').textContent = t.fallbackText;
             document.getElementById('retryBtn').textContent = t.retryBtn;
             document.getElementById('storeBtn').textContent = t.storeBtn;
+            document.getElementById('linkImpressum').textContent = t.impressum;
+            document.getElementById('linkAbout').textContent = t.about;
+            document.getElementById('linkPrivacy').textContent = t.privacy;
+
+            document.getElementById('linkImpressum').href = 'https://klemp-roeder.de/Impressum';
+            document.getElementById('linkAbout').href = 'https://klemp-roeder.de/RateMyBuy';
+            document.getElementById('linkPrivacy').href = 'https://klemp-roeder.de/Datenschutz';
             
             const urlParams = new URLSearchParams(window.location.search);
             const groupId = urlParams.get('groupId');
