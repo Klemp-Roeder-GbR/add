@@ -17,38 +17,38 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .fallback-container {
-            display: none;
+        .container {
             text-align: center;
             color: white;
             padding: 20px;
             max-width: 400px;
         }
         
-        .fallback-container.show {
-            display: block;
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
         
-        .fallback-container h2 {
+        .status-message {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        
+        .container h2 {
             margin: 0 0 10px 0;
             font-size: 24px;
         }
         
-        .fallback-container p {
+        .container p {
             margin: 0 0 30px 0;
             font-size: 16px;
             opacity: 0.9;
@@ -86,17 +86,31 @@
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.5);
         }
+        
+        .opening-indicator {
+            display: inline-block;
+            margin-left: 8px;
+            opacity: 0;
+            animation: fadeInOut 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <div class="spinner" id="spinner"></div>
-    
-    <div class="fallback-container" id="fallback">
-        <h2 id="fallbackTitle">App nicht installiert?</h2>
-        <p id="fallbackText">Lade RateMyBuy herunter oder öffne die App manuell</p>
+    <div class="container">
+        <div class="app-icon">🛒</div>
+        <p class="status-message" id="statusMessage">
+            App wird geöffnet<span class="opening-indicator">...</span>
+        </p>
+        <h2 id="fallbackTitle">App öffnet sich nicht?</h2>
+        <p id="fallbackText">Öffne RateMyBuy manuell oder lade die App herunter</p>
         <div class="button-group">
-            <a href="#" class="btn btn-primary" id="storeBtn">Im Store öffnen</a>
-            <a href="#" class="btn btn-secondary" id="retryBtn">App erneut öffnen</a>
+            <a href="#" class="btn btn-primary" id="retryBtn">App erneut öffnen</a>
+            <a href="#" class="btn btn-secondary" id="storeBtn">Im Store öffnen</a>
         </div>
     </div>
     
@@ -106,17 +120,19 @@
             const translations = {
                 de: {
                     title: 'RateMyBuy - Gruppen',
-                    fallbackTitle: 'App nicht installiert?',
-                    fallbackText: 'Lade RateMyBuy herunter oder öffne die App manuell',
-                    storeBtn: 'Im Store öffnen',
-                    retryBtn: 'App erneut öffnen'
+                    statusMessage: 'App wird geöffnet',
+                    fallbackTitle: 'App öffnet sich nicht?',
+                    fallbackText: 'Öffne RateMyBuy manuell oder lade die App herunter',
+                    retryBtn: 'App erneut öffnen',
+                    storeBtn: 'Im Store öffnen'
                 },
                 en: {
                     title: 'RateMyBuy - Groups',
-                    fallbackTitle: 'App not installed?',
-                    fallbackText: 'Download RateMyBuy or open the app manually',
-                    storeBtn: 'Open in Store',
-                    retryBtn: 'Open app again'
+                    statusMessage: 'Opening app',
+                    fallbackTitle: 'App not opening?',
+                    fallbackText: 'Open RateMyBuy manually or download the app',
+                    retryBtn: 'Open app again',
+                    storeBtn: 'Open in Store'
                 }
             };
             
@@ -132,10 +148,12 @@
             // Apply translations
             document.title = t.title;
             document.documentElement.lang = lang;
+            document.getElementById('statusMessage').innerHTML = 
+                t.statusMessage + '<span class="opening-indicator">...</span>';
             document.getElementById('fallbackTitle').textContent = t.fallbackTitle;
             document.getElementById('fallbackText').textContent = t.fallbackText;
-            document.getElementById('storeBtn').textContent = t.storeBtn;
             document.getElementById('retryBtn').textContent = t.retryBtn;
+            document.getElementById('storeBtn').textContent = t.storeBtn;
             
             const urlParams = new URLSearchParams(window.location.search);
             const groupId = urlParams.get('groupId');
@@ -162,54 +180,18 @@
             const androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
             const storeUrl = isIOS ? iosStoreUrl : androidStoreUrl;
             
-            let appOpened = false;
-            let fallbackTimer = null;
-            
-            const spinner = document.getElementById('spinner');
-            const fallback = document.getElementById('fallback');
             const storeBtn = document.getElementById('storeBtn');
             const retryBtn = document.getElementById('retryBtn');
             
             storeBtn.href = storeUrl;
             
-            const showFallback = () => {
-                if (appOpened) return;
-                spinner.style.display = 'none';
-                fallback.classList.add('show');
-            };
-            
             const tryOpenApp = () => {
-                appOpened = false;
-                
                 window.location.href = appUrl;
-                
-                // Fallback Timer starten
-                if (fallbackTimer) clearTimeout(fallbackTimer);
-                fallbackTimer = setTimeout(showFallback, 2500);
             };
-            
-            // Events um zu erkennen ob App geöffnet wurde
-            const handleAppOpened = () => {
-                appOpened = true;
-                if (fallbackTimer) {
-                    clearTimeout(fallbackTimer);
-                }
-            };
-            
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'hidden') {
-                    handleAppOpened();
-                }
-            });
-            
-            window.addEventListener('blur', handleAppOpened);
-            window.addEventListener('pagehide', handleAppOpened);
             
             // Retry Button
             retryBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                fallback.classList.remove('show');
-                spinner.style.display = 'block';
                 tryOpenApp();
             });
             
