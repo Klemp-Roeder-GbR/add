@@ -283,7 +283,7 @@
         let appOpenAttempted = false;
         let storeRedirectTimer = null;
 
-        // Detect browser language if no lang parameter
+        // Detect browser language
         if (!urlParams.get('lang')) {
             const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
             currentLang = (browserLang === 'de') ? 'de' : 'en';
@@ -313,10 +313,10 @@
             
             const trimmedUsername = username.trim();
             
-            // Check length (3-15 characters)
+            // Check length
             if (trimmedUsername.length < 3 || trimmedUsername.length > 15) return false;
             
-            // Check for allowed characters only (letters, numbers, dot, minus, underscore)
+            // Check for allowed characters only
             const validPattern = /^[a-zA-Z0-9._-]+$/;
             if (!validPattern.test(trimmedUsername)) return false;
             
@@ -382,7 +382,7 @@
                 
                 // Nur zu Store weiterleiten wenn App nicht geöffnet wurde
                 storeRedirectTimer = setTimeout(() => {
-                    // Prüfe ob User noch auf der Seite ist (App hat nicht geöffnet)
+                    // Prüfe ob User noch auf der Seite ist
                     if (document.visibilityState === 'visible') {
                         if (isIOS) {
                             window.location.href = 'https://apps.apple.com/app/id6752779751';
