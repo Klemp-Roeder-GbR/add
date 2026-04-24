@@ -248,24 +248,35 @@
             const tryOpenApp = () => {
                 if (appOpenAttempted) return;
                 appOpenAttempted = true;
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const groupId = urlParams.get('groupId');
                 
+                const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+                const isAndroid = /Android/.test(navigator.userAgent);
+                
+                const appUrl = groupId && groupId.trim() !== ''
+                    ? `ratemybuy://?groupId=${encodeURIComponent(groupId)}`
+                    : `ratemybuy://?openGroups=true`;
+
+                const iosStoreUrl = 'https://apps.apple.com/app/id6752779751';
+                const androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
+
                 window.location.href = appUrl;
-                
+
                 storeRedirectTimer = setTimeout(() => {
                     if (document.visibilityState === 'visible') {
-                        window.location.href = storeUrl;
+                        window.location.href = isIOS ? iosStoreUrl : androidStoreUrl;
                     }
                 }, 3000);
-                            
-                // Cleanup wenn App öffnet (Seite wird versteckt)
+
                 document.addEventListener('visibilitychange', () => {
                     if (document.visibilityState === 'hidden' && storeRedirectTimer) {
                         clearTimeout(storeRedirectTimer);
                         storeRedirectTimer = null;
                     }
                 });
-                
-                // Cleanup wenn Fenster Fokus verliert
+
                 window.addEventListener('blur', () => {
                     if (storeRedirectTimer) {
                         clearTimeout(storeRedirectTimer);
