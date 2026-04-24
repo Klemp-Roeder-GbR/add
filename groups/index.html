@@ -152,9 +152,9 @@
         <p id="fallbackText">Lade die App herunter, um diese Gruppe zu öffnen.</p>
         <div class="button-group">
             <a href="#" class="btn btn-primary" id="storeBtn">App herunterladen</a>
-            <a href="#" class="btn btn-secondary" id="retryBtn">App bereits installiert? Öffnen</a>
+            <button class="btn btn-secondary" id="retryBtn" onclick="tryOpenApp()">App bereits installiert? Öffnen</button>
         </div>
-    </div>
+    </div> 
         <footer>
         <a href="#" id="linkImpressum"></a>
         <span>·</span>
@@ -279,6 +279,8 @@
                 e.preventDefault();
                 tryOpenApp();
             });
+
+            window.tryOpenApp = tryOpenApp;
             
         })();
     </script>
