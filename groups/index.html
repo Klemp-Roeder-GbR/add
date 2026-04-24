@@ -242,17 +242,42 @@
             
             storeBtn.href = storeUrl;
             
+            let storeRedirectTimer = null;
+            
             const tryOpenApp = () => {
                 window.location.href = appUrl;
+                
+                // Fallback zum Store nach 3 Sekunden, wenn App nicht öffnet
+                storeRedirectTimer = setTimeout(() => {
+                    if (document.visibilityState === 'visible') {
+                        window.location.href = storeUrl;
+                    }
+                }, 3000);
+                
+                // Cleanup wenn App öffnet (Seite wird versteckt)
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'hidden' && storeRedirectTimer) {
+                        clearTimeout(storeRedirectTimer);
+                        storeRedirectTimer = null;
+                    }
+                });
+                
+                // Cleanup wenn Fenster Fokus verliert
+                window.addEventListener('blur', () => {
+                    if (storeRedirectTimer) {
+                        clearTimeout(storeRedirectTimer);
+                        storeRedirectTimer = null;
+                    }
+                });
             };
             
-            // Retry
+            // Retry Button
             retryBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 tryOpenApp();
             });
             
-            // App öffnen
+            // App automatisch öffnen beim Laden der Seite
             // tryOpenApp();
             
         })();
