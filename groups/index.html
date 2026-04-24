@@ -227,9 +227,9 @@
             // App URL
             let appUrl;
             if (groupId && groupId.trim() !== '') {
-                appUrl = `ratemybuy://?groupId=${encodeURIComponent(groupId)}`;
+                appUrl = `ratemybuy://open?groupId=${encodeURIComponent(groupId)}`;
             } else {
-                appUrl = 'ratemybuy://?openGroups=true';
+                appUrl = 'ratemybuy://open?openGroups=true';
             }
             
             // Store URLs
