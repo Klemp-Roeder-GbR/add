@@ -235,12 +235,8 @@
             storeBtn.href = storeUrl;
             
             let storeRedirectTimer = null;
-            let appOpenAttempted = false;
             
             const tryOpenApp = () => {
-                if (appOpenAttempted) return;
-                appOpenAttempted = true;
-
                 const urlParams = new URLSearchParams(window.location.search);
                 const groupId = urlParams.get('groupId');
                 
@@ -283,8 +279,7 @@
                 tryOpenApp();
             });
 
-            // window.tryOpenApp = tryOpenApp;
-
+            // automatisch öffnen
             tryOpenApp();
         })();
     </script>
