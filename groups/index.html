@@ -224,14 +224,6 @@
                 return;
             }
             
-            // App URL
-            let appUrl;
-            if (groupId && groupId.trim() !== '') {
-                appUrl = `ratemybuy://open?groupId=${encodeURIComponent(groupId)}`;
-            } else {
-                appUrl = 'ratemybuy://open?openGroups=true';
-            }
-            
             // Store URLs
             const iosStoreUrl = 'https://apps.apple.com/app/id6752779751';
             const androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
@@ -256,8 +248,8 @@
                 const isAndroid = /Android/.test(navigator.userAgent);
                 
                 const appUrl = groupId && groupId.trim() !== ''
-                    ? `ratemybuy://?groupId=${encodeURIComponent(groupId)}`
-                    : `ratemybuy://?openGroups=true`;
+                    ? `ratemybuy://open?groupId=${encodeURIComponent(groupId)}`
+                    : `ratemybuy://open?openGroups=true`;
 
                 const iosStoreUrl = 'https://apps.apple.com/app/id6752779751';
                 const androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.ratemybuy.ratemybuy';
