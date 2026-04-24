@@ -243,31 +243,20 @@
             storeBtn.href = storeUrl;
             
             let storeRedirectTimer = null;
+            let appOpenAttempted = false;
             
             const tryOpenApp = () => {
-                // Für Android: Intent-URL statt Custom Scheme
-                const isAndroid = /Android/.test(navigator.userAgent);
-                const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-
-                if (isAndroid) {
-                    // Intent-URL umgeht das Instagram-Problem auf Android
-                    window.location.href = `intent://open?groupId=${encodeURIComponent(groupId)}#Intent;scheme=ratemybuy;package=com.ratemybuy.ratemybuy;end`;
-                } else if (isIOS) {
-                    // iOS: iframe-Trick statt direkter Navigation
-                    const iframe = document.createElement('iframe');
-                    iframe.style.display = 'none';
-                    iframe.src = appUrl;
-                    document.body.appendChild(iframe);
-                    setTimeout(() => document.body.removeChild(iframe), 500);
-                }
+                if (appOpenAttempted) return;
+                appOpenAttempted = true;
                 
-                // Fallback zum Store nach 3 Sekunden, wenn App nicht öffnet
+                window.location.href = appUrl;
+                
                 storeRedirectTimer = setTimeout(() => {
                     if (document.visibilityState === 'visible') {
                         window.location.href = storeUrl;
                     }
                 }, 3000);
-                
+                            
                 // Cleanup wenn App öffnet (Seite wird versteckt)
                 document.addEventListener('visibilitychange', () => {
                     if (document.visibilityState === 'hidden' && storeRedirectTimer) {
